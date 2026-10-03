@@ -1,6 +1,9 @@
 // All the pixel art in the game, drawn with rectangles at 1 logical px.
 // Nothing here is loaded from an image file.
 import { P } from "./palette.js";
+import { drawText } from "./font.js";
+
+export { hash };
 
 export function r(ctx, x, y, w, h, c) {
   ctx.fillStyle = c;
@@ -16,112 +19,7 @@ function hash(x, y) {
 
 /* ---------------- room shell ---------------- */
 
-export function drawRoom(ctx, W, H, wallY) {
-  // back wall plaster with soft texture
-  r(ctx, 0, 0, W, wallY, P.plaster);
-  for (let y = 0; y < wallY; y += 2)
-    for (let x = 0; x < W; x += 2)
-      if (hash(x, y) > 0.93) r(ctx, x, y, 1, 1, P.plasterShade);
-  // ceiling beam + blue frieze
-  r(ctx, 0, 0, W, 4, P.blueDeep);
-  r(ctx, 0, 4, W, 2, P.blue);
-  for (let x = 2; x < W; x += 8) r(ctx, x, 7, 4, 1, P.blueLight);
-  // skirting
-  r(ctx, 0, wallY - 5, W, 4, P.blue);
-  r(ctx, 0, wallY - 1, W, 1, P.blueDeep);
-
-  // floor: terracotta tiles with a zellige band
-  const T = 16;
-  for (let y = wallY; y < H; y += T) {
-    for (let x = 0; x < W; x += T) {
-      const alt = ((x / T + (y - wallY) / T) | 0) % 2 === 0;
-      r(ctx, x, y, T, T, alt ? P.tileA : P.tileB);
-      r(ctx, x, y, T, 1, P.grout);
-      r(ctx, x, y, 1, T, P.grout);
-      for (let i = 0; i < 3; i++) {
-        const nx = x + 2 + ((hash(x + i, y) * 12) | 0);
-        const ny = y + 2 + ((hash(x, y + i) * 12) | 0);
-        r(ctx, nx, ny, 1, 1, alt ? P.tileB : P.tileA);
-      }
-    }
-  }
-  // zellige band near the wall
-  const bandY = wallY + 1;
-  r(ctx, 0, bandY, W, 6, P.plasterShade);
-  for (let x = 0; x < W; x += 6) {
-    r(ctx, x + 2, bandY + 1, 2, 4, P.zellige);
-    r(ctx, x + 1, bandY + 2, 4, 2, P.zellige);
-    r(ctx, x + 2, bandY + 2, 2, 2, P.ochre);
-  }
-  r(ctx, 0, bandY + 6, W, 1, P.grout);
-
-  // contact shadow under the wall
-  ctx.fillStyle = "rgba(27,26,34,0.12)";
-  ctx.fillRect(0, bandY + 7, W, 3);
-
-  // side walls and front edge
-  r(ctx, 0, 0, 8, H, P.plasterShade);
-  r(ctx, 7, 0, 1, H, P.plasterDeep);
-  r(ctx, W - 8, 0, 8, H, P.plasterShade);
-  r(ctx, W - 8, 0, 1, H, P.plasterDeep);
-  r(ctx, 0, H - 10, W, 10, P.plasterShade);
-  r(ctx, 0, H - 10, W, 1, P.plasterDeep);
-  r(ctx, 0, 0, 8, 6, P.blueDeep);
-  r(ctx, W - 8, 0, 8, 6, P.blueDeep);
-}
-
 /* ---------------- wall pieces ---------------- */
-
-export function drawWindow(ctx, x, y, w, h, t) {
-  // arched opening
-  r(ctx, x - 2, y + 6, w + 4, h - 4, P.blueDeep);
-  r(ctx, x + 4, y - 2, w - 8, 10, P.blueDeep);
-  r(ctx, x, y + 6, w, h - 6, P.sky);
-  r(ctx, x + 6, y, w - 12, 8, P.sky);
-  r(ctx, x + 2, y + 2, w - 4, 6, P.sky);
-  r(ctx, x, y + 6, w, 6, P.skyHigh);
-  r(ctx, x + 6, y, w - 12, 6, P.skyHigh);
-  // sun + sea
-  r(ctx, x + w - 16, y + 12, 6, 6, P.sun);
-  r(ctx, x + w - 17, y + 13, 8, 4, P.sun);
-  const seaY = y + h - 14;
-  r(ctx, x, seaY, w, 14, P.sea);
-  r(ctx, x, seaY + 7, w, 7, P.seaDeep);
-  // moving glints
-  for (let i = 0; i < 5; i++) {
-    const gx = x + ((i * 11 + t * 6) % w);
-    r(ctx, gx, seaY + 2 + (i % 3) * 3, 3, 1, "#CFE8F7");
-  }
-  // distant sail
-  const sx = x + 6 + ((t * 2) % (w - 12));
-  r(ctx, sx, seaY - 4, 1, 4, P.ink);
-  r(ctx, sx + 1, seaY - 4, 3, 3, "#FFFFFF");
-  // mullion + blue grille
-  r(ctx, x + w / 2 - 1, y, 2, h, P.blue);
-  r(ctx, x, y + h / 2, w, 1, P.blue);
-  // sill
-  r(ctx, x - 4, y + h, w + 8, 3, P.plasterShade);
-  r(ctx, x - 4, y + h + 3, w + 8, 1, P.plasterDeep);
-  // shutters
-  r(ctx, x - 10, y + 6, 7, h - 6, P.blue);
-  r(ctx, x + w + 3, y + 6, 7, h - 6, P.blue);
-  for (let yy = y + 8; yy < y + h; yy += 3) {
-    r(ctx, x - 9, yy, 5, 1, P.blueDeep);
-    r(ctx, x + w + 4, yy, 5, 1, P.blueDeep);
-  }
-}
-
-export function drawLightPatch(ctx, x, w, wallY, t) {
-  const a = 0.1 + Math.sin(t * 0.6) * 0.015;
-  ctx.fillStyle = `rgba(255,236,170,${a})`;
-  ctx.beginPath();
-  ctx.moveTo(x, wallY + 8);
-  ctx.lineTo(x + w, wallY + 8);
-  ctx.lineTo(x + w + 44, wallY + 70);
-  ctx.lineTo(x + 30, wallY + 70);
-  ctx.closePath();
-  ctx.fill();
-}
 
 export function drawCorkboard(ctx, x, y, w, h) {
   r(ctx, x + 1, y + 1, w, h, P.shadow);
@@ -169,7 +67,7 @@ export function drawDiploma(ctx, x, y, w, h, t) {
     r(ctx, x + w - 5, j + 1, 1, 1, P.plasterDeep);
   }
   // "2027" in 3x5 digits
-  drawTinyText(ctx, "2027", x + w / 2 - 7, y + h / 2 - 2, P.inkSoft);
+  drawText(ctx, "2027", x + w / 2 - 7, y + h / 2 - 2, P.inkSoft);
 }
 
 export function drawWhiteboard(ctx, x, y, w, h) {
@@ -203,32 +101,6 @@ export function drawWhiteboard(ctx, x, y, w, h) {
   r(ctx, x + 17, y + h - 1, 5, 1, P.markerRed);
 }
 
-export function drawDoor(ctx, x, y, w, h) {
-  // frame & arch
-  r(ctx, x - 3, y + 6, w + 6, h - 6, P.plasterDeep);
-  r(ctx, x + 3, y - 2, w - 6, 10, P.plasterDeep);
-  r(ctx, x, y + 6, w, h - 6, P.blue);
-  r(ctx, x + 4, y, w - 8, 8, P.blue);
-  r(ctx, x + 2, y + 2, w - 4, 6, P.blue);
-  // panels
-  r(ctx, x + w / 2, y + 2, 1, h - 2, P.blueDeep);
-  // studs — the black nail patterns on Tunisian doors
-  const studs = [
-    [0, 12], [-4, 16], [4, 16], [0, 20], [-6, 22], [6, 22], [0, 26], [-4, 28], [4, 28], [0, 32],
-    [-8, 38], [8, 38], [-4, 40], [4, 40], [0, 44], [-8, 46], [8, 46],
-  ];
-  const cx = x + w / 2;
-  for (const [dx, dy] of studs) if (y + dy < y + h - 2) r(ctx, cx + dx, y + dy, 1, 1, P.ink);
-  r(ctx, x + 2, y + 8, w - 4, 1, P.ink);
-  // knocker
-  r(ctx, cx + 3, y + 30, 3, 1, P.ochre);
-  r(ctx, cx + 3, y + 31, 1, 3, P.ochre);
-  r(ctx, cx + 5, y + 31, 1, 3, P.ochre);
-  r(ctx, cx + 3, y + 34, 3, 1, P.ochre);
-  // step
-  r(ctx, x - 4, y + h, w + 8, 3, P.plasterDeep);
-}
-
 /* ---------------- floor furniture ---------------- */
 
 export function drawShelf(ctx, x, y, w, h) {
@@ -260,29 +132,6 @@ export function drawShelf(ctx, x, y, w, h) {
     }
   }
   r(ctx, x, y, w, 2, P.woodLight);
-}
-
-export function drawRack(ctx, x, y, w, h, t) {
-  r(ctx, x + 2, y + h - 2, w, 4, P.shadow);
-  r(ctx, x, y, w, h, P.metalDark);
-  r(ctx, x + 2, y + 2, w - 4, h - 4, P.metal);
-  r(ctx, x, y, w, 2, P.metalLight);
-  const units = 8;
-  const uh = (h - 8) / units;
-  for (let i = 0; i < units; i++) {
-    const uy = Math.round(y + 4 + i * uh);
-    r(ctx, x + 3, uy, w - 6, uh - 1, P.metalLight);
-    r(ctx, x + 4, uy + 1, w - 8, uh - 3, P.metalDark);
-    for (let j = 0; j < 4; j++) {
-      const seed = hash(i * 7 + j, Math.floor(t * (3 + j)));
-      const c = seed > 0.55 ? (j === 3 ? P.ledAmber : P.ledGreen) : P.ledOff;
-      r(ctx, x + 6 + j * 3, uy + 2, 2, 1, c);
-    }
-    r(ctx, x + w - 10, uy + 2, 5, 1, P.metal);
-  }
-  // label tape
-  r(ctx, x + 4, y + h - 4, 14, 2, P.plaster);
-  r(ctx, x + 5, y + h - 3, 9, 1, P.inkSoft);
 }
 
 export function drawDesk(ctx, x, y, w, h, t) {
@@ -397,7 +246,7 @@ export function drawCat(ctx, x, y, t, awake) {
   if (!awake) {
     const z = (t * 0.8) % 3;
     ctx.globalAlpha = Math.max(0, 1 - z / 3);
-    drawTinyText(ctx, "z", x + 15 + z * 2, y - 6 - z * 4, P.inkSoft);
+    drawText(ctx, "z", x + 15 + z * 2, y - 6 - z * 4, P.inkSoft);
     ctx.globalAlpha = 1;
   }
 }
@@ -505,21 +354,6 @@ export function drawPlayer(ctx, x, y, dir, frame, moving) {
     r(ctx, f ? ox + 8 : ox + 4, oy + 3, 1, 2, P.ink);
     r(ctx, f ? ox + 10 : ox + 2, oy + 4, 1, 1, P.skin);
     r(ctx, f ? ox + 6 : ox + 4, oy + 6, 4, 1, P.hair);
-  }
-}
-
-/* ---------------- tiny 3x5 font for in-world numbers ---------------- */
-
-const GLYPHS = {
-  "0": "111101101101111", "2": "111001111100111", "7": "111001010010010",
-  z: "000111001010111", "!": "010010010000010",
-};
-export function drawTinyText(ctx, s, x, y, c) {
-  let cx = Math.round(x);
-  for (const ch of s) {
-    const g = GLYPHS[ch];
-    if (g) for (let i = 0; i < 15; i++) if (g[i] === "1") r(ctx, cx + (i % 3), Math.round(y) + ((i / 3) | 0), 1, 1, c);
-    cx += 4;
   }
 }
 

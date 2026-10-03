@@ -1,21 +1,30 @@
-// One palette for the whole room — Sidi Bou Said whites and blues, terracotta floor, kilim reds.
+// One palette for the whole game. El Kef stone and lime-wash for the house,
+// slate and signal colours for the lab, open sky for the terrace.
 export const P = {
   ink: "#1B1A22",
   inkSoft: "#2C2A35",
   shadow: "rgba(27,26,34,0.28)",
+  white: "#FFFFFF",
 
-  plaster: "#EFE8DA",
-  plasterShade: "#DDD3C1",
-  plasterDeep: "#C9BEA9",
-  blue: "#1F5FA8",
-  blueDeep: "#163F72",
-  blueLight: "#4C86C6",
+  // house — lime-wash over Kef limestone
+  lime: "#EEE5D2",
+  limeShade: "#DCCFB6",
+  stone: "#CDB68E",
+  stoneLight: "#DCC8A2",
+  stoneDark: "#AE966C",
+  stoneLine: "#8F7A55",
+  green: "#3E6B4F",
+  greenDeep: "#2A4A36",
+  greenLight: "#5E8C6C",
+  beam: "#6B4A33",
+  beamDark: "#4A3222",
 
   tileA: "#C9784C",
   tileB: "#BC6C42",
   grout: "#A9603B",
-  zellige: "#2E7D78",
   ochre: "#E3B04B",
+  ochreDeep: "#B98A2E",
+  zellige: "#2E7D78",
 
   wood: "#8A5A3B",
   woodDark: "#5E3B26",
@@ -25,11 +34,21 @@ export const P = {
   metalLight: "#525A69",
   metalDark: "#22262E",
 
+  // sky & landscape
   sky: "#A9D8F2",
   skyHigh: "#7FC0EA",
-  sea: "#2F7FC4",
-  seaDeep: "#22639E",
+  skyLow: "#D7EEF7",
   sun: "#FFE08A",
+  mountain: "#A58F6A",
+  mountainLight: "#BCA67E",
+  mountainDark: "#86704F",
+  cliff: "#94805E",
+  kasbah: "#C9AE7F",
+  kasbahShade: "#A88E62",
+  roof: "#E9E1D0",
+  roofShade: "#CFC4AE",
+  hill: "#8FA16A",
+  hillDark: "#6F8350",
 
   leaf: "#3F8F4E",
   leafDark: "#2B6838",
@@ -60,6 +79,7 @@ export const P = {
 
   ledGreen: "#5BE37D",
   ledAmber: "#FFB547",
+  ledRed: "#FF5E57",
   ledOff: "#2A3A2E",
 
   cork: "#C49A6C",
@@ -71,4 +91,32 @@ export const P = {
   board: "#F7F7F2",
   marker: "#2E5FA8",
   markerRed: "#C2412D",
+
+  // misc colours used by props
+  plaster: "#EEE5D2",
+  plasterShade: "#DCCFB6",
+  plasterDeep: "#C2B396",
+  blue: "#2F5E9A",
+  blueDeep: "#1F4170",
+  blueLight: "#5C88C0",
+  sea: "#2F7FC4",
+
+  // lab
+  labWall: "#2F3542",
+  labWallLight: "#3A4253",
+  labWallDark: "#252A35",
+  labFloor: "#3B404C",
+  labFloorAlt: "#363A45",
+  labLine: "#2B2F39",
+  hazard: "#F2C14E",
+  panda: "#D0532C",
+  pandaDark: "#8E3416",
+  ch: "#F7D046", // ClickHouse yellow
+  redis: "#D7372A",
+  go: "#57C4DC",
+  spring: "#6DB33F",
+  kong: "#1AA39B",
+  next: "#EDEDED",
+  packet: "#7FD1B9",
+  packetHashed: "#9AA3B5",
 };

@@ -1,40 +1,39 @@
 # Youssef's Workshop
 
-A playable portfolio: walk around a small pixel-art room in Tunis and look at things to find my work, projects and contact details.
+A playable portfolio. Walk around a small pixel-art house in El Kef, go through the arch into a lab that lays out the Tanilytics architecture end to end, and climb up to the roof terrace for the view of the Kasbah.
 
 **Play:** https://youssefsghairiportfolio.vercel.app · **Regular site:** https://sghairiportfolio.vercel.app
 
-## What's in the room
+## Areas
 
-| Station | What you learn |
-|---|---|
-| Desk | Current role — Full Stack Engineer at SpecTraceAI |
-| Server rack | Tanilytics, the privacy-first analytics platform |
-| Bookshelf | Side projects (GrindAI, CareSync, MeetQuest, DungeonAI, Atlas) |
-| Whiteboard | Stack, split by work vs. projects |
-| Corkboard | Previous experience and activities |
-| Frame | INSAT — and why it's still empty |
-| Door | Contact, CV, links |
+**House** — a lime-washed Kef stone room with a view of Jebel Dyr.
+Desk (current role), bookshelf (side projects), whiteboard (stack), corkboard (experience), frame (INSAT), letterbox (contact).
 
-There are also a window and a cat. The cat is called Kafka.
+**Tanilytics lab** — the whole system as a room. Events ride a conveyor belt from a browser, through the Kong gate, past the Go ingestion service's Bloom filter (duplicates drop into a bin), through three Redpanda brokers, into the processing machine (where packets turn grey: the IP is hashed), and into ClickHouse's columns. Redis, the Spring Boot services, the privacy vault and the live dashboard sit at the end; an ops console and the gzip benchmark are in front. Every machine explains its part.
+
+**Terrace** — the Kasbah on its spur under the cliffs of Jebel Dyr, the old town stepping down the slope. A telescope, a Roman column (Sicca Veneria), and the rooftop water tank every house has.
+
+There are seven secrets. One of them needs a very old code.
 
 ## Controls
 
 - **WASD / arrow keys** to walk, **E / Space / Enter** to interact, **Esc** to close
-- **Tap or click** the floor to walk there, or tap an object to walk up and look at it
-- The **Discovered** counter in the top-right lists every station and can walk you to one
+- **Tap or click** anywhere to walk there (with pathfinding), or tap an object to walk up and look at it
+- The **Discovered** list in the top-right groups every station by area, counts secrets, and walks you to anything you pick
+- Progress is saved in your browser
 
 ## How it's built
 
-No game engine and no image assets. Everything is plain JavaScript on a `<canvas>`:
+No game engine and no image assets — plain JavaScript on a `<canvas>`.
 
-- `src/art.js` — all pixel art, drawn with 1px rectangles from one palette (`src/palette.js`): plaster and blue Sidi Bou Said walls, terracotta floor, a kilim rug, a studded Tunisian door
-- `src/world.js` — room layout, collisions and interaction zones
-- `src/main.js` — loop, input (keyboard, mouse, touch), collision sliding, camera, depth sorting
+- `src/main.js` — loop, rooms and doorways, input (keyboard, mouse, touch), BFS pathfinding on a 4px grid, collision sliding, camera, depth sorting, save
+- `src/rooms/` — one module per area: layout, collisions, interaction spots, and the pixel art for that room
+- `src/kef.js` — the El Kef landscape, drawn procedurally into any rectangle (used by the window and the terrace), plus snow
+- `src/art.js`, `src/font.js`, `src/palette.js` — shared props, the player, a 3×5 pixel font, one palette
 - `src/ui.js` + `public/style.css` — title card, HUD, prompt, dialogue panel (DOM, so text is selectable and links are real links)
-- `src/content.js` — everything the stations say
+- `src/content.js` — everything the game says
 
-The scene renders at 384×224 and is scaled up with nearest-neighbour filtering. On narrow screens the camera zooms in and follows the player.
+Rooms render at native resolution (the lab is 528×224) and are scaled up with nearest-neighbour filtering; the camera follows the player when a room is wider than the screen.
 
 ```bash
 npm install

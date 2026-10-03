@@ -105,7 +105,7 @@ kbd {
   background: var(--ink); border: 2px solid var(--plaster); padding: 6px 10px 8px;
   box-shadow: 3px 3px 0 0 rgba(0,0,0,0.45);
 }
-.plate strong { display: block; font-weight: 400; font-size: 29px; }
+.plate strong { display: block; font-weight: 400; font-size: 29px; white-space: nowrap; }
 .plate span { font-size: 21px; color: var(--muted); }
 
 .quest { position: relative; margin-left: auto; }
@@ -121,7 +121,7 @@ kbd {
 #q-bar { display: block; height: 100%; width: 0; background: var(--ochre); transition: width 0.4s steps(6); }
 #q-list {
   display: none; list-style: none; margin: 8px 0 0; padding: 6px;
-  position: absolute; right: 0; width: 260px;
+  position: absolute; right: 0; width: 280px;
   background: var(--ink); border: 2px solid var(--plaster); box-shadow: 4px 4px 0 0 rgba(0,0,0,0.45);
 }
 .quest.open #q-list { display: block; }
@@ -135,6 +135,17 @@ kbd {
 .tick { grid-row: span 2; width: 12px; height: 12px; border: 2px solid var(--muted); }
 #q-list button.done .tick { background: var(--ochre); border-color: var(--ochre); box-shadow: inset 0 0 0 2px var(--ink); }
 #q-list button.done span:not(.tick) { color: var(--muted); }
+#q-list { max-height: min(70vh, 560px); overflow-y: auto; }
+#q-list li.group { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 8px 2px; font-family: var(--px); font-size: 20px; color: var(--ochre); border-top: 2px dashed #3a3845; }
+#q-list li.group:first-child { border-top: 0; padding-top: 4px; }
+#q-list li.group b { font-weight: 400; color: var(--muted); }
+#q-list li.secrets { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; margin-top: 8px; padding: 10px 8px 6px; border-top: 2px solid var(--plaster); font-family: var(--px); font-size: 22px; }
+#q-list li.secrets b { font-weight: 400; color: var(--ochre); }
+#q-list li.secrets small { grid-column: 1 / -1; font-family: var(--text); font-size: 12px; color: var(--muted); }
+#prompt.exit { background: var(--ochre); }
+#dialog[data-group="lab"] .panel { box-shadow: 0 0 0 3px var(--ink), inset 0 0 0 3px #1f6b7a, 8px 8px 0 3px rgba(0,0,0,0.45); }
+#dialog[data-group="secret"] #d-kicker { color: #f2a7a0; }
+#d-body code { font-family: var(--px); font-size: 19px; background: var(--ink-2); padding: 0 4px; color: var(--plaster); }
 
 .classic {
   font-family: var(--px); font-size: 23px; color: var(--plaster); text-decoration: none;
@@ -197,7 +208,9 @@ kbd {
 #dialog .foot kbd { font-size: 20px; }
 
 @media (max-width: 640px) {
-  .plate span, .classic { display: none; }
+  .classic { display: none; }
+  .plate strong { font-size: 24px; }
+  .plate span { font-size: 18px; }
   #title .card { padding: 24px 20px 18px; }
   #dialog { padding: 10px; }
   #toast { font-size: 22px; width: max-content; max-width: calc(100% - 32px); text-align: center; }
