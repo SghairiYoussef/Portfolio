@@ -1,93 +1,71 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sghairi Youssef Portfolio</title>
-  </head>
-  <body>
-    <style>
-      @font-face {
-        font-family: monogram;
-        src: url(monogram.ttf);
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Youssef's Workshop — a playable portfolio</title>
+  <meta name="description" content="Walk around Youssef Sghairi's pixel-art workshop to find his work, projects and contact details. Full stack engineer, INSAT Software Engineering student, available for a PFE from February 2027." />
+  <meta name="theme-color" content="#14131A" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect width='8' height='8' fill='%231F5FA8'/%3E%3Crect x='2' y='1' width='4' height='7' fill='%23163F72'/%3E%3Crect x='3' y='3' width='1' height='1' fill='%231B1A22'/%3E%3Crect x='4' y='5' width='1' height='1' fill='%23E3B04B'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <canvas id="game" aria-label="Pixel-art room. Use the arrow keys or WASD to walk, E to interact, or tap where you want to go."></canvas>
 
-      body {
-        font-family: monogram, monospace;
-        font-size: 2rem;
-        overflow: hidden;
-      }
-
-      #app {
-        width: 100%;
-        height: 100%;
-        position: relative;
-      }
-
-      #textbox {
-        position: absolute;
-        left: 10%;
-        right: 10%;
-        bottom: 2vh;
-        min-height: 10vh;
-        background: white;
-        border-radius: 3px;
-        outline-style: solid;
-        padding: 1rem;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: flex-start;
-        word-spacing: 0.2rem;
-        filter: drop-shadow(0 0 0.75rem rgb(112, 112, 112));
-        /* overflow: auto; */
-      }
-
-      .ui-text {
-        margin: 0;
-        user-select: none;
-      }
-
-      .ui-close-btn {
-        font-family: monogram, monospace;
-        border-style: none;
-        border-radius: 3px;
-        padding: 1rem;
-        font-size: inherit;
-      }
-
-      .btn-container {
-        align-self: flex-end;
-        margin-top: 1rem;
-      }
-
-      .note {
-        position: absolute;
-        left: 5%;
-        top: 1vh;
-        display: flex;
-        flex-direction: column;
-        color: rgb(238, 238, 238);
-        user-select: none;
-      }
-    </style>
-    <div id="app">
-      <div>
-        <p class="note">Tap/Click around to move</p>
-
-        <div id="textbox-container" style="display: none">
-          <div id="textbox">
-            <p id="dialogue" class="ui-text"></p>
-            <div class="btn-container">
-              <button id="close" class="ui-close-btn">Close</button>
-            </div>
-          </div>
-        </div>
+  <!-- title card -->
+  <section id="title" aria-labelledby="t-name">
+    <div class="card">
+      <p class="eyebrow">A playable portfolio</p>
+      <h1 id="t-name">Youssef's Workshop</h1>
+      <p class="lede">Full stack engineer · INSAT Software Engineering · PFE from Feb 2027</p>
+      <button id="start" type="button" class="btn primary big">Step inside</button>
+      <div class="keys" aria-label="Controls">
+        <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows to walk</span>
+        <span><kbd>E</kbd> to look at things</span>
+        <span>or just tap / click</span>
       </div>
-      <canvas id="game"></canvas>
+      <a class="skip" data-href="classic" href="#">In a hurry? Open the regular portfolio →</a>
     </div>
-    <script type="module" src="src/main.js"></script>
-  </body>
+  </section>
+
+  <!-- HUD -->
+  <header id="hud" hidden>
+    <div class="plate">
+      <strong>Youssef Sghairi</strong>
+      <span>Workshop · Tunis</span>
+    </div>
+    <div class="quest">
+      <button id="q-toggle" type="button" aria-expanded="false" aria-controls="q-list">
+        <span>Discovered</span>
+        <b id="q-count">0/7</b>
+        <i class="meter"><i id="q-bar"></i></i>
+      </button>
+      <ul id="q-list"></ul>
+    </div>
+    <a class="classic" data-href="classic" href="#" target="_blank" rel="noopener">Regular site ↗</a>
+  </header>
+
+  <button id="prompt" type="button" hidden><kbd>E</kbd><span></span></button>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <!-- dialogue -->
+  <section id="dialog" role="dialog" aria-modal="true" aria-labelledby="d-title" hidden>
+    <div class="panel">
+      <p id="d-kicker" class="eyebrow"></p>
+      <h2 id="d-title"></h2>
+      <div id="d-body"></div>
+      <div id="d-links"></div>
+      <div class="foot">
+        <span><kbd>Esc</kbd> or <kbd>E</kbd> to close</span>
+        <button id="d-close" type="button" class="btn">Close</button>
+      </div>
+    </div>
+  </section>
+
+  <noscript>
+    <p style="color:#EFE8DA;font:16px/1.5 sans-serif;padding:24px">This portfolio is a small game and needs JavaScript. The regular site is at <a style="color:#E3B04B" href="https://sghairiportfolio.vercel.app">sghairiportfolio.vercel.app</a>.</p>
+  </noscript>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
 </html>
