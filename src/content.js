@@ -172,11 +172,11 @@ export const STATIONS = {
     kicker: "Step 2 · Kong",
     title: "The front door",
     body: `
-      <p>Everything comes in through Kong. The interesting decision is <strong>what</strong> to rate-limit on.</p>
+      <p>Everything comes in through Kong. The interesting decision is <strong>what</strong> to rate-limit on — here's the design:</p>
       <ul>
-        <li>Limits are keyed by the site's token, not by IP — a busy customer site shouldn't be throttled because of someone else's traffic.</li>
-        <li>Bursts are allowed for the SDK's batched flushes; sustained rate is capped per site.</li>
-        <li>Counters live in Redis, so the limit holds across all gateway pods instead of per pod.</li>
+        <li>Limits keyed by the site's token, not by IP — a busy customer site shouldn't be throttled because of someone else's traffic.</li>
+        <li>Bursts allowed for the SDK's batched flushes; sustained rate capped per site.</li>
+        <li>Counters in Redis, so the limit holds across all gateway pods instead of per pod.</li>
       </ul>`,
   },
   ingest: {
@@ -215,7 +215,7 @@ export const STATIONS = {
     body: `
       <p>A Go consumer reads batches from Redpanda and runs each event through four steps:</p>
       <ul>
-        <li><strong>Anonymise:</strong> resolve country and region, then truncate the IP (IPv4 last octet zeroed, IPv6 cut to /48) and hash it with SHA-256 and a salt. The raw IP never reaches storage.</li>
+        <li><strong>Anonymise:</strong> truncate the IP (IPv4 last octet zeroed, IPv6 cut to /48), look up country and region from the truncated address, then hash it with SHA-256 and a salt. The raw IP never reaches storage.</li>
         <li><strong>Parse</strong> the user agent into browser, OS and device type.</li>
         <li><strong>Stitch sessions</strong> in Redis — 30 minutes of inactivity starts a new one.</li>
         <li><strong>Write</strong> the batch to ClickHouse, then update live counters in Redis.</li>
