@@ -1,9 +1,12 @@
+import { inject } from '@vercel/analytics';
 import { drawPlayer, drawMarker } from "./art.js";
 import { STATIONS, GROUPS } from "./content.js";
 import { createUI } from "./ui.js";
 import { workshop } from "./rooms/workshop.js";
 import { lab } from "./rooms/lab.js";
 import { terrace } from "./rooms/terrace.js";
+
+inject();
 
 const ROOMS = { workshop, lab, terrace };
 const VIEW_W = 384; // the zoom is chosen so this much world fits across
